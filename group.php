@@ -5,8 +5,10 @@ include 'database.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $description = trim($_POST["description"]);
+    $group_id = trim($_POST["group_id"]);
+    $author = trim($_POST["author"]);
     $content = trim($_POST["content"]);
+    $created_at = trim($_POST["created_at"]);
 
     if (empty($description) || empty($content)) {
 
@@ -15,16 +17,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        $sql = "INSERT INTO groups (name, description)
-                VALUES (?,?)";
+        $sql = "INSERT INTO posts (group_id, author, content, created_at)
+                VALUES (?, ?, ?, ?)";
 
         $stmt = mysqli_prepare($conn, $sql);
 
         mysqli_stmt_bind_param(
             $stmt,
-            "ss",
-            $description,
-            $content
+            "isss",
+            $group_id,
+            $author,
+            $content,
+            $created_at
         );
     if (mysqli_stmt_execute($stmt)) {
         $message = "Julkaisu lisättiin onnistuneesti.";
@@ -35,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-$result = mysqli_query($conn, "SELECT id, name, description FROM `groups`");
+$result = mysqli_query($conn, "SELECT id, group_id, author, content, created_at FROM `posts`");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,20 +50,23 @@ $result = mysqli_query($conn, "SELECT id, name, description FROM `groups`");
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav>
+        <nav>
                 <a href="index.php">Etusivu</a>
             </nav>
 
-    <div class="postaukset">
 <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-    <article class="group">
-        <a class="name" href="group.php?id=<?php echo (int) $row['id']; ?>">
-            <?php echo htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?>
-        </a>
-        <p class="description">
-            <?php echo htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8'); ?>
-        </p>
-    </article>
+    <div class="postaukset">
+        <article class="post">
+            <p class="author">
+                <?php echo htmlspecialchars($row['author'], ENT_QUOTES, 'UTF-8'); ?>
+            </p>
+            <p class="content">
+                <?php echo htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8'); ?>
+            </p>
+            <p class="created_at">
+                <?php echo htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8'); ?>
+            </p>
+        </article>
 <?php } ?>
     </div>
 </body>
