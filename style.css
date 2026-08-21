@@ -10,11 +10,171 @@ body {
     font-family: Arial, sans-serif;
 }
 
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #333;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+header{
+    text-align: center;
+    padding: 20px;
+}
+
+main{
+    text-align: center;
+    margin: 0;
+    padding: 20px 20px 0;
+}
+
+.group-list {
+    width: 70%;
+    margin: 0 0 0 20px;
+    padding: 0 20px;
+    background-color: #3e3e3e;
+}
+
+.group-list h2 {
+    margin: 0;
+    padding: 12px 0;
+}
+
+.group-list + .postaukset {
+    clear: both;
+    float: none;
+    width: 70%;
+    margin: 0 0 0 20px;
+    margin-top: 0;
+}
+
+.home-columns {
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    align-items: flex-start;
+    gap: 20px;
+    width: calc(100% - 20px);
+    margin-left: 20px;
+    padding-right: 20px;
+}
+
+.home-panel {
+    min-width: 0;
+    background-color: #111;
+    border: 1px solid #333;
+}
+
+.home-panel .group-list {
+    width: 100%;
+    margin: 0;
+}
+
+.group-items,
+.latest-posts {
+    display: flex;
+    flex-direction: column;
+}
+
+.latest-post {
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+
+.latest-post-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.latest-post-header time {
+    color: #888;
+    font-size: .8rem;
+}
+
+.latest-group {
+    display: inline-block;
+    margin: 0;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.latest-post p {
+    margin: 10px 0;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.latest-author {
+    display: block;
+    margin-top: 8px;
+    color: #aaa;
+    font-size: .85rem;
+}
+
+.latest-post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    color: #aaa;
+    font-size: .85rem;
+}
+
+.latest-post-meta time {
+    color: #888;
+    font-size: .8rem;
+}
+
+.home-message {
+    width: calc(70% - 20px);
+    margin: 20px 0 0 20px;
+}
+
+@media (max-width: 800px) {
+    .home-columns {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 40px);
+    }
+
+    .home-panel {
+        width: 100%;
+    }
+}
+.group {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-bottom: 1px solid #333;
+}
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.group-header .name {
+    flex: 1;
+}
+
+.group-header .muokkaa {
+    margin-left: 0;
+}
 .postaukset {
     width: 70%;
-    max-width: 900px;
-    min-height: 100vh;
-    margin: 0 auto;
+    float: none;
+    margin: 0 0 0 20px;
     background-color: #111;
     border-right: 1px solid #333;
     border-left: 1px solid #333;
@@ -22,27 +182,46 @@ body {
     flex-direction: column;
 }
 
-.name,
-.description {
-    width: 100%;
-    padding: 20px;
-    overflow-wrap: anywhere;
-}
-
 .name {
-    padding-bottom: 8px;
+    padding: 0;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: 2rem;
     font-weight: bold;
 }
 
 .description {
-    padding-top: 0;
-    padding-bottom: 20px;
+    margin: 0;
+    padding: 0 0 20px;
     color: #fff;
     font-size: 1rem;
     line-height: 1.5;
-    border-bottom: 1px solid #333;
+    overflow-wrap: anywhere;
+}
+
+.muokkaa {
+    padding: 0;
+}
+
+.muokkaa a {
+    display: inline-block;
+    color: #d8d8d8;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: 0.1s ease-in-out;
+}
+
+.poista a{
+    color: red;
+     font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.post-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    margin-left: auto;
 }
 
 .post {
@@ -61,6 +240,16 @@ body {
     font-weight: bold;
 }
 
+.author-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.author-row .muokkaa {
+    margin-left: 0;
+}
+
 .content {
     font-size: 1rem;
     line-height: 1.5;
@@ -68,8 +257,96 @@ body {
 }
 
 .created_at {
-    padding-top: 10px;
+    margin: 0;
     color: #888;
     font-size: 0.8rem;
-    border-top: 1px solid #333;
 }
+
+
+.add-post {
+    width: 70%;
+    max-width: 900px;
+    min-height: calc(100vh - 64px);
+    margin: 0 0 0 20px;
+    padding: 30px;
+    background-color: #111;
+    border-right: 1px solid #333;
+    border-left: 1px solid #333;
+}
+
+.add-group-page {
+    margin: 0 auto;
+}
+
+.add-post-page {
+    margin: 0 auto;
+}
+
+.center-page {
+    margin: 0 auto;
+}
+
+.add-post h1 {
+    margin: 0 0 30px;
+    font-size: 1.8rem;
+}
+
+.add-post form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-post label {
+    margin-top: 10px;
+    color: #aaa;
+    font-size: .9rem;
+}
+
+.add-post input,
+.add-post select,
+.add-post textarea {
+    width: 100%;
+    padding: 12px;
+    color: white;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    font: 1rem Arial, sans-serif;
+    outline: none;
+}
+
+
+.add-post textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.add-post button {
+    align-self: flex-end;
+    margin-top: 10px;
+    padding: 10px 20px;
+    color: black;
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: .9rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add-post button:hover {
+    background-color: #ccc;
+}
+
+.message {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #aaa;
+}
+
+.Onnstui_message { color: rgb(0, 255, 0); }
+.Epaonnstui_message { color: red; }
