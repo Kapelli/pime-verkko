@@ -2,11 +2,16 @@
 
 include 'database.php';
 
+// Haetaan URL-osoitteesta ryhmän tunniste ja varmistetaan sen olevan kokonaisluku.
 $group_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$group_id) {
     exit('Virheellinen ryhmä.');
 }
+
+// Näytetään ilmoitus, jos julkaisu poistettiin edelliseltä sivulta.
 $post_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
+
+// Haetaan valitun ryhmän nimi ja kuvaus parametrisoidulla kyselyllä.
 $group_stmt = mysqli_prepare(
     $conn,
     'SELECT name, description FROM `groups` WHERE id = ?'
@@ -21,6 +26,7 @@ if (!$group) {
     exit('Ryhmää ei löytynyt.');
 }
 
+// Haetaan ryhmän julkaisut uusimmasta vanhimpaan.
 $stmt = mysqli_prepare(
     $conn,
     "SELECT id, group_id, author, content, created_at

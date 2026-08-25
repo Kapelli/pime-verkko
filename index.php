@@ -2,6 +2,24 @@
 
 include 'database.php';
 
+
+session_start();
+
+
+if (isset($_SESSION["user_id"])) {
+    
+    $mysqli = require __DIR__ . "/database.php";
+    
+    $sql = "SELECT * FROM user
+            WHERE id = {$_SESSION["user_id"]}";
+            
+    $result = $mysqli->query($sql);
+    
+    $user = $result->fetch_assoc();
+}
+
+
+
 $group_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
 $result = mysqli_query($conn, "SELECT id, name, description FROM `groups`");
 $latest_posts = mysqli_query(
@@ -27,6 +45,35 @@ $latest_posts = mysqli_query(
         <a href="index.php">Etusivu</a>
         <a href="add_group.php">Luo ryhmä</a>
     </nav>
+
+    <div class="account-bar">
+        <?php if (isset($user)): ?>
+            <div class="account-identity">
+                <span class="account-avatar" aria-hidden="true">
+                    <?= htmlspecialchars(strtoupper(substr($user["name"], 0, 1))) ?>
+                </span>
+                <div>
+                    <span class="account-label">Kirjautuneena</span>
+                    <strong><?= htmlspecialchars($user["name"], ENT_QUOTES, 'UTF-8') ?></strong>
+                </div>
+            </div>
+            <a class="account-link" href="logout.php">Kirjaudu ulos <span aria-hidden="true">&#8594;</span></a>
+        <?php else: ?>
+            <div class="account-identity">
+                <span class="account-avatar account-avatar-guest" aria-hidden="true">?</span>
+                <div>
+                    <span class="account-label">Tervetuloa mukaan</span>
+                    <strong>Liity keskusteluun</strong>
+                </div>
+            </div>
+            <div class="account-links">
+                <a class="account-link" href="login.php">Kirjaudu sisään</a>
+                <a class="account-link account-link-secondary" href="signup.html">Luo tili</a>
+            </div>
+        <?php endif; ?>
+    </div>
+
+
      <header>
         <h1>Pimeäverkko</h1>
     </header>
