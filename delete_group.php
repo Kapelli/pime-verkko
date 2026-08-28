@@ -2,12 +2,17 @@
 
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
+
+
+// Luetaan poistettavan ryhmän tunniste ja tarkistetaan se.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
     exit('Virheellinen ryhmätunnus.');
 }
 
 $select_stmt = mysqli_prepare($conn, 'SELECT id, name, description FROM `groups` WHERE id = ?');
+// Haetaan poistettavan ryhmän tiedot vahvistussivua varten.
 mysqli_stmt_bind_param($select_stmt, 'i', $id);
 mysqli_stmt_execute($select_stmt);
 $result = mysqli_stmt_get_result($select_stmt);
@@ -19,12 +24,14 @@ if (!$row) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Varmistetaan, että lomake lähettää saman tunnisteen kuin sivu.
     $delete_id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
     if ($delete_id !== $id) {
         exit('Virheellinen ryhmätunnus.');
     }
 
+    // Poistetaan ensin ryhmän julkaisut ja sitten itse ryhmä yhdessä tapahtumassa.
     mysqli_begin_transaction($conn);
 
     $posts_stmt = mysqli_prepare($conn, 'DELETE FROM posts WHERE group_id = ?');

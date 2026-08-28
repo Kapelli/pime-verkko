@@ -1,13 +1,16 @@
 <?php
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
+
+// Luetaan muokattavan ryhmän tunniste URL-osoitteesta.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if (!$id) {
     exit('Virheellinen ryhmätunnus.');
 }
 
-/* Hae ryhmä */
+// Haetaan muokattavan ryhmän nykyiset tiedot.
 $stmt = mysqli_prepare($conn, 'SELECT id, name, description FROM `groups` WHERE id = ?');
 mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
@@ -19,13 +22,16 @@ if (!$row) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Luetaan lomakkeella annetut uudet arvot.
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
 
     if ($name === '' || $description === '') {
+        // Ryhmässä täytyy olla sekä nimi että kuvaus.
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
     } else {
+        // Päivitetään ryhmä parametrisoidulla kyselyllä.
         $stmt = mysqli_prepare(
             $conn,
             'UPDATE `groups` SET name = ?, description = ? WHERE id = ?'

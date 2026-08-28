@@ -2,20 +2,26 @@
 
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
+
+// Alustetaan lomakkeen palautetta varten tarvittavat muuttujat.
 $message = '';
 $message_class = '';
 $selected_group_id = filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT) ?: 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Luetaan julkaisuun liittyvät tiedot lomakkeesta.
     $group_id = filter_input(INPUT_POST, 'group_id', FILTER_VALIDATE_INT);
     $selected_group_id = $group_id ?: 0;
     $author = trim($_POST['author'] ?? '');
     $content = trim($_POST['content'] ?? '');
 
     if (!$group_id || $author === '' || $content === '') {
+        // Julkaisua ei tallenneta, jos jokin pakollinen kenttä puuttuu.
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
     } else {
+        // Tallennetaan julkaisu parametrisoidulla kyselyllä.
         $stmt = mysqli_prepare(
             $conn,
             'INSERT INTO posts (group_id, author, content, created_at) VALUES (?, ?, ?, NOW())'
@@ -34,10 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (!$selected_group_id) {
+    // Julkaisu kuuluu aina olemassa olevaan ryhmään.
     exit('Valitse ryhmä ennen julkaisun lisäämistä.');
 }
 
 $group_stmt = mysqli_prepare($conn, 'SELECT name FROM `groups` WHERE id = ?');
+// Haetaan lomakkeelle valitun ryhmän nimi.
 mysqli_stmt_bind_param($group_stmt, 'i', $selected_group_id);
 mysqli_stmt_execute($group_stmt);
 $group_result = mysqli_stmt_get_result($group_stmt);

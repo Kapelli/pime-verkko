@@ -2,21 +2,15 @@
 
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
 
-session_start();
-
-
-if (password_verify($password, $user["password"]))
-{
-    $_SESSION["user_id"] = $user["id"];
-    $_SESSION["name"] = $user["name"];
-
-    header("Location: profile.php");
-    exit;
-}
-
+// Luetaan poiston onnistumisesta kertova ilmoitus URL-osoitteesta.
 $group_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
+
+// Haetaan etusivulle kaikki keskusteluryhmät.
 $result = mysqli_query($conn, "SELECT id, name, description FROM `groups`");
+
+// Haetaan kymmenen uusinta julkaisua ryhmätietoineen.
 $latest_posts = mysqli_query(
     $conn,
     "SELECT posts.author, posts.content, posts.created_at,
@@ -29,18 +23,22 @@ $latest_posts = mysqli_query(
 ?>
 <!DOCTYPE html>
 <html lang="fi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <?php
-include 'include/nav.php';
-?>
-
+    // Lisätään sivuston yhteinen navigointi.
+    include 'include/nav.php';
+    ?>
+    <!--<h1>Tervetuloa <?php echo htmlspecialchars($user["name"]); ?>!</h1> -->
     <div class="account-bar">
+        <!-- Näytetään kirjautuneelle käyttäjälle tili tai vierailijalle kirjautumislinkit. -->
         <?php if (isset($user)): ?>
             <div class="account-identity">
                 <span class="account-avatar" aria-hidden="true">
@@ -68,12 +66,12 @@ include 'include/nav.php';
     </div>
 
 
-     <header>
+    <header>
         <h1>Pimeäverkko</h1>
     </header>
     <main>
         <p>
-        Pimeäverkko on yksityinen keskustelufoorumi, jossa käyttäjät voivat luoda ryhmiä ja julkaista sisältöä.
+            Pimeäverkko on yksityinen keskustelufoorumi, jossa käyttäjät voivat luoda ryhmiä ja julkaista sisältöä.
         </p>
     </main>
     <div class="home-columns">
@@ -83,26 +81,27 @@ include 'include/nav.php';
                 <a href="add_group.php">Lisää ryhmä</a>
             </div>
             <div class="group-items">
-<?php while ($row = mysqli_fetch_assoc($result)) { ?>
-                <article class="group">
-                    <div class="group-header">
-                        <a class="name" href="group.php?id=<?php echo (int) $row['id']; ?>">
-                            <?php echo htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?>
-                        </a>
-                        <div class="post-actions">
-                            <div class="muokkaa">
-                                <a href="edit_group.php?id=<?php echo (int) $row['id']; ?>">Muokkaa</a>
-                            </div>
-                            <div class="poista">
-                                <a href="delete_group.php?id=<?php echo (int) $row['id']; ?>">Poista</a>
+                <!-- Tulostetaan ryhmät yksitellen turvallisesti HTML-muotoon. -->
+                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                    <article class="group">
+                        <div class="group-header">
+                            <a class="name" href="group.php?id=<?php echo (int) $row['id']; ?>">
+                                <?php echo htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?>
+                            </a>
+                            <div class="post-actions">
+                                <div class="muokkaa">
+                                    <a href="edit_group.php?id=<?php echo (int) $row['id']; ?>">Muokkaa</a>
+                                </div>
+                                <div class="poista">
+                                    <a href="delete_group.php?id=<?php echo (int) $row['id']; ?>">Poista</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <p class="description">
-                        <?php echo htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8'); ?>
-                    </p>
-                </article>
-<?php } ?>
+                        <p class="description">
+                            <?php echo htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8'); ?>
+                        </p>
+                    </article>
+                <?php } ?>
             </div>
         </section>
 
@@ -111,20 +110,21 @@ include 'include/nav.php';
                 <h2>Uusimmat postaukset</h2>
             </div>
             <div class="latest-posts">
-<?php while ($post = mysqli_fetch_assoc($latest_posts)) { ?>
-                <article class="latest-post">
-                    <a class="latest-group" href="group.php?id=<?php echo (int) $post['group_id']; ?>">
-                        <?php echo htmlspecialchars($post['group_name'], ENT_QUOTES, 'UTF-8'); ?>
-                    </a>
-                    <strong class="latest-author">
-                        <?php echo htmlspecialchars($post['author'], ENT_QUOTES, 'UTF-8'); ?>
-                    </strong>
-                    <p><?php echo htmlspecialchars($post['content'], ENT_QUOTES, 'UTF-8'); ?></p>
-                    <div class="latest-post-meta">
-                        <time><?php echo htmlspecialchars($post['created_at'], ENT_QUOTES, 'UTF-8'); ?></time>
-                    </div>
-                </article>
-<?php } ?>
+                <!-- Tulostetaan uusimmat julkaisut tietokannasta haetussa järjestyksessä. -->
+                <?php while ($post = mysqli_fetch_assoc($latest_posts)) { ?>
+                    <article class="latest-post">
+                        <a class="latest-group" href="group.php?id=<?php echo (int) $post['group_id']; ?>">
+                            <?php echo htmlspecialchars($post['group_name'], ENT_QUOTES, 'UTF-8'); ?>
+                        </a>
+                        <strong class="latest-author">
+                            <?php echo htmlspecialchars($post['author'], ENT_QUOTES, 'UTF-8'); ?>
+                        </strong>
+                        <p><?php echo htmlspecialchars($post['content'], ENT_QUOTES, 'UTF-8'); ?></p>
+                        <div class="latest-post-meta">
+                            <time><?php echo htmlspecialchars($post['created_at'], ENT_QUOTES, 'UTF-8'); ?></time>
+                        </div>
+                    </article>
+                <?php } ?>
             </div>
         </section>
     </div>
@@ -136,4 +136,5 @@ include 'include/nav.php';
     <?php } ?>
     <?php include 'include/footer.php'; ?>
 </body>
+
 </html>

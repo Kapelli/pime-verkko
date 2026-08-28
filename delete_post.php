@@ -2,6 +2,9 @@
 
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
+
+// Luetaan poistettavan julkaisun tunniste ja tarkistetaan se.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
     exit('Virheellinen julkaisutunnus.');
@@ -11,6 +14,7 @@ $select_stmt = mysqli_prepare(
     $conn,
     'SELECT id, group_id, author, content FROM posts WHERE id = ?'
 );
+// Haetaan poistettavan julkaisun tiedot vahvistussivua varten.
 mysqli_stmt_bind_param($select_stmt, 'i', $id);
 mysqli_stmt_execute($select_stmt);
 $result = mysqli_stmt_get_result($select_stmt);
@@ -22,6 +26,7 @@ if (!$row) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Estetään toisen julkaisun poistaminen muuttamalla lomakkeen tunnistetta.
     $delete_id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
     if ($delete_id !== $id) {

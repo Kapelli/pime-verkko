@@ -1,9 +1,10 @@
 <?php
 
+// Kertoo näkymälle, epäonnistuiko viimeisin kirjautumisyritys.
 $is_invalid = false;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    
+    // Ladataan tietokantayhteys ja etsitään käyttäjä sähköpostiosoitteen perusteella.
     $mysqli = require __DIR__ . "/database.php";
     
     $sql = sprintf("SELECT * FROM user
@@ -12,12 +13,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     $result = $mysqli->query($sql);
     
+    // Muutetaan kyselyn ensimmäinen tulos käyttäjän tiedoiksi.
     $user = $result->fetch_assoc();
     
     if ($user) {
         
+        // Verrataan annettua salasanaa tietokantaan tallennettuun tiivisteeseen.
         if (password_verify($_POST["password"], $user["password_hash"])) {
-            
+            // Luodaan turvallinen istunto onnistuneen kirjautumisen jälkeen.
             session_start();
             
             session_regenerate_id();
@@ -29,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
     
+    // Näytetään yleinen virheilmoitus, jos käyttäjää tai salasanaa ei tunnistettu.
     $is_invalid = true;
 }
 

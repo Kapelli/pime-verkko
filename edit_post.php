@@ -1,13 +1,16 @@
 <?php
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
+
+// Luetaan muokattavan julkaisun tunniste URL-osoitteesta.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if (!$id) {
     exit('Virheellinen julkaisutunnus.');
 }
 
-/* Hae julkaisu */
+// Haetaan julkaisun nykyiset tiedot lomaketta varten.
 $stmt = mysqli_prepare($conn, 'SELECT id, group_id, author, content FROM posts WHERE id = ?');
 mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
@@ -19,13 +22,16 @@ if (!$row) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Luetaan julkaisun uudet tiedot lomakkeesta.
     $author = trim($_POST['author'] ?? '');
     $content = trim($_POST['content'] ?? '');
 
     if ($author === '' || $content === '') {
+        // Julkaisua ei päivitetä puuttuvilla tiedoilla.
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
     } else {
+        // Päivitetään julkaisu parametrisoidulla kyselyllä.
         $stmt = mysqli_prepare(
             $conn,
             'UPDATE posts SET author = ?, content = ? WHERE id = ?'

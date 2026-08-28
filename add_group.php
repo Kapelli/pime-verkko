@@ -2,17 +2,22 @@
 
 include 'database.php';
 
+require __DIR__ . "/include/session.php";
+// Alustetaan lomakkeen palauteviestit.
 $message = '';
 $message_class = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	// Poistetaan ylimääräiset välilyönnit käyttäjän syötteistä.
 	$name = trim($_POST['name'] ?? '');
 	$description = trim($_POST['description'] ?? '');
 
 	if ($name === '' || $description === '') {
+		// Estetään tyhjän ryhmän tallentaminen.
 		$message = 'Täytä kaikki ryhmän kentät.';
 		$message_class = 'Epaonnstui_message';
 	} else {
+		// Käytetään valmisteltua lausetta käyttäjän syötteiden käsittelyyn.
 		$stmt = mysqli_prepare(
 			$conn,
 			'INSERT INTO `groups` (name, description) VALUES (?, ?)'

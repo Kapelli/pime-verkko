@@ -1,12 +1,15 @@
+// Luodaan rekisteröitymislomakkeen asiakaspuolen validointi.
 const validation = new JustValidate("#signup");
 
 validation
+    // Nimi on pakollinen kenttä.
     .addField("#name", [
         {
             rule: "required"
         }
     ])
     .addField("#email", [
+        // Sähköpostin pitää olla annettu ja oikeassa muodossa.
         {
             rule: "required"
         },
@@ -14,6 +17,7 @@ validation
             rule: "email"
         },
         {
+            // Tarkistetaan palvelimelta, ettei sähköpostiosoite ole jo käytössä.
             validator: (value) => () => {
                 return fetch("validate-email.php?email=" + encodeURIComponent(value))
                        .then(function(response) {
@@ -27,6 +31,7 @@ validation
         }
     ])
     .addField("#password", [
+        // JustValidate tarkistaa salasanan olemassaolon ja vahvuuden.
         {
             rule: "required"
         },
@@ -35,6 +40,7 @@ validation
         }
     ])
     .addField("#password_confirmation", [
+        // Varmistetaan, että salasana kirjoitettiin uudelleen oikein.
         {
             validator: (value, fields) => {
                 return value === fields["#password"].elem.value;
@@ -43,6 +49,7 @@ validation
         }
     ])
     .onSuccess((event) => {
+        // Lähetetään lomake palvelimelle vasta onnistuneen validoinnin jälkeen.
         document.getElementById("signup").submit();
     });
     

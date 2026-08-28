@@ -1,13 +1,14 @@
 <?php
 
+// Tietokantapalvelimen yhteystiedot.
 $host = "localhost";
 $username = "root";
 $password = "";
 $dbname = "pimeaverkko";
 
-// Create connection
+// Luodaan yhteys MySQL-tietokantaan.
 $conn = new mysqli($host, $username, $password, $dbname);
-// Check connection
+// Keskeytetään suoritus, jos tietokantayhteyttä ei voitu muodostaa.
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }

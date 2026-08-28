@@ -1,3 +1,4 @@
+/* Ladataan käyttöliittymän otsikko- ja leipätekstifontit. */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
@@ -15,7 +16,10 @@
     --shadow: 0 22px 70px rgba(0, 0, 0, .32);
 }
 
+/* Keskitetään sovelluksen värit ja tehosteet muuttujiin. */
+
 * {
+    /* Varmistetaan, että mitat sisältävät elementin reunukset ja sisennykset. */
     box-sizing: border-box;
 }
 
@@ -23,6 +27,8 @@ html {
     min-height: 100%;
     background: var(--bg);
 }
+
+    /* Tumma tausta ja hillityt väripinnat muodostavat sivuston perustyylin. */
 
 body {
     min-height: 100vh;
@@ -35,6 +41,8 @@ body {
     font: 400 16px/1.55 'DM Sans', 'Segoe UI', sans-serif;
 }
 
+    /* Taustalle lisätään kevyt ruudukko ilman, että se häiritsee sisältöä. */
+
 body::before {
     position: fixed;
     inset: 0;
@@ -46,6 +54,8 @@ body::before {
     background-size: 44px 44px;
     mask-image: linear-gradient(to bottom, black, transparent 72%);
 }
+
+    /* Navigointi pysyy keskitettynä ja mukautuu käytettävissä olevaan tilaan. */
 
 nav {
     display: flex;
@@ -92,6 +102,8 @@ nav a:focus-visible {
     transform: translateY(-2px);
 }
 
+    /* Yhteinen korostettu tyyli tärkeimmille toimintolinkeille. */
+
 .action-button {
     display: inline-flex;
     align-items: center;
@@ -126,6 +138,8 @@ select:focus-visible {
     outline: 2px solid var(--mint);
     outline-offset: 4px;
 }
+
+    /* Sivujen pääotsikon ympärille jätetään väljyyttä. */
 
 header {
     max-width: 1180px;
@@ -180,6 +194,8 @@ main>p {
 .group-list > .action-button {
     margin-top: 18px;
 }
+
+    /* Käyttäjän tila näytetään omassa selkeästi rajatussa alueessaan. */
 
 .account-bar {
     display: flex;
@@ -544,7 +560,7 @@ main>p {
     margin: 0 auto 40px;
 }
 
-/* Login, signup and success pages share the same visual language. */
+/* Kirjautumis-, rekisteröitymis- ja onnistumissivut käyttävät samaa visuaalista tyyliä. */
 body.auth-page {
     display: grid;
     place-items: center;
@@ -648,6 +664,8 @@ body.auth-page {
         width: 100%;
     }
 }
+
+    /* Pienellä näytöllä alatunnisteen sisältö asetetaan pystysuuntaan. */
 
 @media (max-width: 720px) {
     nav {
