@@ -49,62 +49,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="fi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
-            <nav>
-                <a href="index.php">Etusivu</a>
-                <a href="group.php?id=<?php echo (int) $row['group_id']; ?>">Takaisin ryhmään</a>
-                <a href="add_post.php">Lisää Julkaisu</a>
-                
-            </nav>
+    <?php include 'include/nav.php'; ?>
 
-            <div class="add-post center-page">
+    <div class="add-post center-page">
 
-                <h1>Muokkaa julkaisu</h1>
-<?php if (!empty($message)) { ?>
-    <div class="<?php echo $message_class; ?>">
-        <?php echo $message; ?>
-    </div>
-<?php } ?>
-
-                <form method="POST">
-
-                    <label for="author">Nimimerkki</label>
-
-                    <input
-                        type="text"
-                        name="author"
-                        id="author"
-                        placeholder="Nimimerkkisi"
-                        value="<?php echo htmlspecialchars($row['author']); ?>"
-                    >
-
-                    <label for="content">Julkaisu</label>
-
-                    <textarea
-                        name="content"
-                        id="content"
-                        ><?php echo htmlspecialchars($row['content']); ?></textarea>
-
-                        <input
-                            type="hidden"
-                            name="id"
-                            value="<?php echo $row['id']; ?>"
->
-
-                    <button type="submit">
-                        Tallenna muutokset
-                    </button>
-
-                </form>
-
+        <h1>Muokkaa julkaisu</h1>
+        <?php if (!empty($message)) { ?>
+            <div class="<?php echo $message_class; ?>">
+                <?php echo $message; ?>
             </div>
+        <?php } ?>
+
+        <form method="POST">
+
+            <label for="author">Nimimerkki</label>
+
+            <input type="text" name="author" id="author" placeholder="Nimimerkkisi"
+                value="<?php echo htmlspecialchars($row['author']); ?>">
+
+            <label for="content">Julkaisu</label>
+
+            <textarea name="content" id="content"><?php echo htmlspecialchars($row['content']); ?></textarea>
+
+            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+
+            <button type="submit">
+                Tallenna muutokset
+            </button>
+            <button type="button" onclick="history.back();">
+                Takaisin
+            </button>
+
+        </form>
+
+    </div>
 
 </body>
+
 </html>

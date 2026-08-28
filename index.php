@@ -6,19 +6,14 @@ include 'database.php';
 session_start();
 
 
-if (isset($_SESSION["user_id"])) {
-    
-    $mysqli = require __DIR__ . "/database.php";
-    
-    $sql = "SELECT * FROM user
-            WHERE id = {$_SESSION["user_id"]}";
-            
-    $result = $mysqli->query($sql);
-    
-    $user = $result->fetch_assoc();
+if (password_verify($password, $user["password"]))
+{
+    $_SESSION["user_id"] = $user["id"];
+    $_SESSION["name"] = $user["name"];
+
+    header("Location: profile.php");
+    exit;
 }
-
-
 
 $group_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
 $result = mysqli_query($conn, "SELECT id, name, description FROM `groups`");
@@ -41,10 +36,9 @@ $latest_posts = mysqli_query(
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav>
-        <a href="index.php">Etusivu</a>
-        <a href="add_group.php">Luo ryhmä</a>
-    </nav>
+    <?php
+include 'include/nav.php';
+?>
 
     <div class="account-bar">
         <?php if (isset($user)): ?>
@@ -86,6 +80,7 @@ $latest_posts = mysqli_query(
         <section class="home-panel">
             <div class="group-list">
                 <h2>Ryhmälista</h2>
+                <a href="add_group.php">Lisää ryhmä</a>
             </div>
             <div class="group-items">
 <?php while ($row = mysqli_fetch_assoc($result)) { ?>
@@ -139,5 +134,6 @@ $latest_posts = mysqli_query(
             Ryhmä poistettu onnistuneesti.
         </div>
     <?php } ?>
+    <?php include 'include/footer.php'; ?>
 </body>
 </html>

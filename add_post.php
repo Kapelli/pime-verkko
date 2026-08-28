@@ -50,18 +50,16 @@ if (!$group) {
 ?>
 <!DOCTYPE html>
 <html lang="fi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lisää julkaisu - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <nav>
-        <a href="index.php">Etusivu</a>
-        <a href="group.php?id=<?php echo (int) $selected_group_id; ?>">Takaisin ryhmään</a>
-        <a href="add_group.php">Luo ryhmä</a>
-    </nav>
+    <?php include 'include/nav.php'; ?>
 
     <main class="add-post add-post-page">
         <h1>Lisää julkaisu</h1>
@@ -77,14 +75,21 @@ if (!$group) {
             <input id="author" name="author" type="text" required>
 
             <label for="group_name">Ryhmä</label>
-            <input id="group_name" type="text" value="<?php echo htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8'); ?>" readonly>
+            <input id="group_name" type="text"
+                value="<?php echo htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8'); ?>" readonly>
             <input type="hidden" name="group_id" value="<?php echo (int) $selected_group_id; ?>">
 
             <label for="content">Julkaisu</label>
             <textarea id="content" name="content" required></textarea>
 
             <button type="submit">Julkaise</button>
+            <button type="button" onclick="history.back();">
+                Takaisin
+            </button>
+
         </form>
+
     </main>
 </body>
+
 </html>

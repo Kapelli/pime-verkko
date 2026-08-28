@@ -33,17 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="fi">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Luo ryhmä - Pimeäverkko</title>
 	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-	<nav>
-		<a href="index.php">Etusivu</a>
-		<a href="add_group.php">Luo ryhmä</a>
-	</nav>
+	<?php include 'include/nav.php'; ?>
 
 	<main class="add-post add-group-page">
 		<h1>Luo ryhmä</h1>
@@ -62,7 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<textarea id="description" name="description" required></textarea>
 
 			<button type="submit">Luo ryhmä</button>
+			<button type="button" onclick="history.back();">
+				Takaisin
+			</button>
+
 		</form>
 	</main>
 </body>
+
 </html>

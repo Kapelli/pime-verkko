@@ -47,16 +47,14 @@ $result = mysqli_stmt_get_result($stmt);
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-        <nav>
-            <a href="index.php">Etusivu</a>
-            <a href="add_post.php?group_id=<?php echo (int) $group_id; ?>">Lisää julkaisu</a>
-        </nav>
+    <?php include 'include/nav.php'; ?>
 
         <header>
             <h1><?php echo htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8'); ?></h1>
         </header>
-        <main>
+        <main class="group-main">
             <p><?php echo htmlspecialchars($group['description'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <a class="button action-button" href="add_post.php?group_id=<?php echo (int) $group_id; ?>">Luo julkaisu</a>
         </main>
 
     <div class="postaukset">

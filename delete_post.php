@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="fi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,46 +56,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 
-        <nav>
-            <a href="index.php">Etusivu</a>
-            <a href="group.php?id=<?php echo (int) $row['group_id']; ?>">Takaisin ryhmään</a>
-        </nav>
+    <?php include 'include/nav.php'; ?>
 
-        <div class="add-post center-page">
+    <div class="add-post center-page">
 
-            <h1>Poista julkaisu</h1>
+        <h1>Poista julkaisu</h1>
 
-            <?php if (!empty($message)) { ?>
-                <div class="message <?php echo $message_class; ?>">
-                    <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
-                </div>
-            <?php } ?>
+        <?php if (!empty($message)) { ?>
+            <div class="message <?php echo $message_class; ?>">
+                <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
+            </div>
+        <?php } ?>
 
-            <p>Haluatko varmasti poistaa tämän julkaisun?</p>
+        <p>Haluatko varmasti poistaa tämän julkaisun?</p>
 
-            <p>
-                    <strong><?php echo htmlspecialchars($row['author'], ENT_QUOTES, 'UTF-8'); ?></strong>
-            </p>
+        <p>
+            <strong><?php echo htmlspecialchars($row['author'], ENT_QUOTES, 'UTF-8'); ?></strong>
+        </p>
 
-            <p>
-                <?php echo htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8'); ?>
-            </p>
+        <p>
+            <?php echo htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8'); ?>
+        </p>
 
-            <form method="POST">
+        <form method="POST">
 
-                <input
-                    type="hidden"
-                    name="id"
-                    value="<?php echo $row['id']; ?>"
-                >
+            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
 
-                <button type="submit">
-                    Poista
-                </button>
+            <button type="submit">
+                Poista
+            </button>
+            <button type="button" onclick="history.back();">
+                Takaisin
+            </button>
 
-            </form>
 
-        </div>
+        </form>
+
+    </div>
 
 </body>
+
 </html>
