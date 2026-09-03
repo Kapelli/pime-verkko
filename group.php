@@ -4,6 +4,8 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+// Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
 
 // Haetaan URL-osoitteesta ryhmän tunniste ja varmistetaan sen olevan kokonaisluku.
 $group_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -32,7 +34,7 @@ if (!$group) {
 // Haetaan ryhmän julkaisut uusimmasta vanhimpaan.
 $stmt = mysqli_prepare(
     $conn,
-    "SELECT id, group_id, author, content, created_at
+    "SELECT id, group_id, user_id, author, content, created_at
      FROM `posts`
      WHERE group_id = ?
      ORDER BY id DESC"
@@ -53,7 +55,7 @@ $result = mysqli_stmt_get_result($stmt);
 
 <body>
     <?php include 'include/nav.php'; ?>
-    
+
     <header>
         <h1><?php echo htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8'); ?></h1>
     </header>
@@ -77,18 +79,22 @@ $result = mysqli_stmt_get_result($stmt);
                     <p class="created_at">
                         <?php echo htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8'); ?>
                     </p>
-                    <div class="post-actions">
-                        <div class="muokkaa">
-                            <a href="edit_post.php?id=<?php echo (int) $row['id']; ?>">
-                                Muokkaa
-                            </a>
+                    <?php
+                    //vain ryhmän omistaja voi muokata tai poistaa omia ryhmiä
+                    if ($row["user_id"] == $user_id): ?>
+                        <div class="post-actions">
+                            <div class="muokkaa">
+                                <a href="edit_post.php?id=<?php echo (int) $row['id']; ?>">
+                                    Muokkaa
+                                </a>
+                            </div>
+                            <div class="poista">
+                                <a href="delete_post.php?id=<?php echo (int) $row['id']; ?>">
+                                    Poista
+                                </a>
+                            </div>
                         </div>
-                        <div class="poista">
-                            <a href="delete_post.php?id=<?php echo (int) $row['id']; ?>">
-                                Poista
-                            </a>
-                        </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <p class="content">

@@ -3,15 +3,18 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+// Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
+
 // Luetaan muokattavan julkaisun tunniste URL-osoitteesta.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-if (!$id) {
+if (!$id || $user_id === 0) {
     exit('Virheellinen julkaisutunnus.');
 }
 
-// Haetaan julkaisun nykyiset tiedot lomaketta varten.
-$stmt = mysqli_prepare($conn, 'SELECT id, group_id, author, content FROM posts WHERE id = ?');
+// Haetaan julkaisun tiedot ja myös user_id, jotta voidaan varmistaa, että käyttäjä omistaa julkaisun.
+$stmt = mysqli_prepare($conn, 'SELECT id, group_id, user_id, author, content FROM posts WHERE id = ?');
 mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -19,6 +22,11 @@ $row = mysqli_fetch_assoc($result);
 
 if (!$row) {
     exit('Julkaisua ei löytynyt.');
+}
+
+// Vain oman julkaisun muokkaus on sallittu.
+if ((int) $row['user_id'] !== $user_id) {
+    exit('Et voi muokata toisen käyttäjän julkaisua.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,12 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
     } else {
-        // Päivitetään julkaisu parametrisoidulla kyselyllä.
+        // Päivitetään vain se julkaisu, joka kuuluu kirjautuneelle käyttäjälle.
         $stmt = mysqli_prepare(
             $conn,
-            'UPDATE posts SET author = ?, content = ? WHERE id = ?'
+            'UPDATE posts SET author = ?, content = ? WHERE id = ? AND user_id = ?'
         );
-        mysqli_stmt_bind_param($stmt, 'ssi', $author, $content, $id);
+        mysqli_stmt_bind_param($stmt, 'ssii', $author, $content, $id, $user_id);
 
         if (mysqli_stmt_execute($stmt)) {
             $message = 'Julkaisu päivitettiin onnistuneesti.';

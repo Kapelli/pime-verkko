@@ -4,15 +4,22 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+// Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
+
 // Luetaan poistettavan julkaisun tunniste ja tarkistetaan se.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
     exit('Virheellinen julkaisutunnus.');
 }
 
+if (!$id || $user_id === 0) {
+    exit('Virheellinen julkaisutunnus.');
+}
+
 $select_stmt = mysqli_prepare(
     $conn,
-    'SELECT id, group_id, author, content FROM posts WHERE id = ?'
+    'SELECT id, group_id, user_id, author, content FROM posts WHERE id = ?'
 );
 // Haetaan poistettavan julkaisun tiedot vahvistussivua varten.
 mysqli_stmt_bind_param($select_stmt, 'i', $id);
@@ -25,6 +32,11 @@ if (!$row) {
     exit('Julkaisua ei löytynyt.');
 }
 
+// Vain oman julkaisun muokkaus on sallittu.
+if ((int) $row['user_id'] !== $user_id) {
+    exit('Et voi muokata toisen käyttäjän julkaisua.');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Estetään toisen julkaisun poistaminen muuttamalla lomakkeen tunnistetta.
     $delete_id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
@@ -33,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Virheellinen julkaisutunnus.');
     }
 
-    $delete_stmt = mysqli_prepare($conn, 'DELETE FROM posts WHERE id = ?');
-    mysqli_stmt_bind_param($delete_stmt, 'i', $id);
+    $delete_stmt = mysqli_prepare($conn, 'DELETE FROM posts WHERE id = ? AND user_id = ?');
+    mysqli_stmt_bind_param($delete_stmt, 'ii', $id, $user_id);
 
     if (mysqli_stmt_execute($delete_stmt)) {
         mysqli_stmt_close($delete_stmt);

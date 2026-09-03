@@ -7,8 +7,8 @@ session_start();
 
 if (!isset($_SESSION["user_id"]))
 {
-    // Väliaikaisesti ohajtaan kijautumis sivulle DEBUG
-    header("Location: login.php");
+
+    header("Location: login-signin-page.html");
     exit;
 }
 

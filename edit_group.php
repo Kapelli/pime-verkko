@@ -1,7 +1,16 @@
 <?php
+
 include 'database.php';
 
 require __DIR__ . "/include/session.php";
+
+// Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
+
+//tarkistetaan että käyttäjä on kirjautunt sisään
+if ($user_id === 0) {
+    die("Virhe: Sinun täytyy kirjautua sisään.");
+}
 
 // Luetaan muokattavan ryhmän tunniste URL-osoitteesta.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -11,7 +20,7 @@ if (!$id) {
 }
 
 // Haetaan muokattavan ryhmän nykyiset tiedot.
-$stmt = mysqli_prepare($conn, 'SELECT id, name, description FROM `groups` WHERE id = ?');
+$stmt = mysqli_prepare($conn, 'SELECT id, user_id, name, description FROM `groups` WHERE id = ?');
 mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -19,6 +28,10 @@ $row = mysqli_fetch_assoc($result);
 
 if (!$row) {
     exit('Ryhmää ei löytynyt.');
+}
+
+if ((int) $row['user_id'] !== $user_id) {
+    exit('Et voi muokata toisen käyttäjän ryhmää.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
     } else {
-        // Päivitetään ryhmä parametrisoidulla kyselyllä.
+        // Päivitetään vain oma ryhmä.
         $stmt = mysqli_prepare(
             $conn,
-            'UPDATE `groups` SET name = ?, description = ? WHERE id = ?'
+            'UPDATE `groups` SET name = ?, description = ? WHERE id = ? AND user_id = ?'
         );
-        mysqli_stmt_bind_param($stmt, 'ssi', $name, $description, $id);
+        mysqli_stmt_bind_param($stmt, 'ssii', $name, $description, $id, $user_id);
 
         if (mysqli_stmt_execute($stmt)) {
             $message = 'Ryhmä päivitettiin onnistuneesti.';

@@ -4,6 +4,13 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+// Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
+
+//tarkistetaan että käyttäjä on kirjautunt sisään
+if ($user_id === 0) {
+    die("Virhe: Sinun täytyy kirjautua sisään.");
+}
 
 // Luetaan poistettavan ryhmän tunniste ja tarkistetaan se.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -11,7 +18,7 @@ if (!$id) {
     exit('Virheellinen ryhmätunnus.');
 }
 
-$select_stmt = mysqli_prepare($conn, 'SELECT id, name, description FROM `groups` WHERE id = ?');
+$select_stmt = mysqli_prepare($conn, 'SELECT id, user_id, name, description FROM `groups` WHERE id = ?');
 // Haetaan poistettavan ryhmän tiedot vahvistussivua varten.
 mysqli_stmt_bind_param($select_stmt, 'i', $id);
 mysqli_stmt_execute($select_stmt);
@@ -21,6 +28,10 @@ mysqli_stmt_close($select_stmt);
 
 if (!$row) {
     exit('Ryhmää ei löytynyt.');
+}
+
+if ((int) $row['user_id'] !== $user_id) {
+    exit('Et voi poistaa toisen käyttäjän ryhmää.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,13 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Poistetaan ensin ryhmän julkaisut ja sitten itse ryhmä yhdessä tapahtumassa.
     mysqli_begin_transaction($conn);
 
-    $posts_stmt = mysqli_prepare($conn, 'DELETE FROM posts WHERE group_id = ?');
-    mysqli_stmt_bind_param($posts_stmt, 'i', $id);
+    $posts_stmt = mysqli_prepare($conn, 'DELETE FROM posts WHERE group_id = ? AND user_id = ?');
+    mysqli_stmt_bind_param($posts_stmt, 'ii', $id, $user_id);
     $posts_deleted = mysqli_stmt_execute($posts_stmt);
     mysqli_stmt_close($posts_stmt);
 
-    $group_stmt = mysqli_prepare($conn, 'DELETE FROM `groups` WHERE id = ?');
-    mysqli_stmt_bind_param($group_stmt, 'i', $id);
+    $group_stmt = mysqli_prepare($conn, 'DELETE FROM `groups` WHERE id = ? AND user_id = ?');
+    mysqli_stmt_bind_param($group_stmt, 'ii', $id, $user_id);
     $group_deleted = mysqli_stmt_execute($group_stmt);
     mysqli_stmt_close($group_stmt);
 

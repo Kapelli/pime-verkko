@@ -4,11 +4,14 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+// Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
+
 // Luetaan poiston onnistumisesta kertova ilmoitus URL-osoitteesta.
 $group_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
 
-// Haetaan etusivulle kaikki keskusteluryhmät.
-$result = mysqli_query($conn, "SELECT id, name, description FROM `groups`");
+// Haetaan etusivulle kaikki keskusteluryhmät ja ryhmien tiedot tietokannasta.
+$result = mysqli_query($conn, "SELECT id, user_id, name, description FROM `groups`");
 
 // Haetaan kymmenen uusinta julkaisua ryhmätietoineen.
 $latest_posts = mysqli_query(
@@ -88,14 +91,18 @@ $latest_posts = mysqli_query(
                             <a class="name" href="group.php?id=<?php echo (int) $row['id']; ?>">
                                 <?php echo htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?>
                             </a>
-                            <div class="post-actions">
-                                <div class="muokkaa">
-                                    <a href="edit_group.php?id=<?php echo (int) $row['id']; ?>">Muokkaa</a>
+                            <?php
+                            //vain ryhmän omistaja voi muokata tai poistaa omia ryhmiä
+                            if ($row["user_id"] == $user_id): ?>
+                                <div class="post-actions">
+                                    <div class="muokkaa">
+                                        <a href="edit_group.php?id=<?php echo (int) $row['id']; ?>">Muokkaa</a>
+                                    </div>
+                                    <div class="poista">
+                                        <a href="delete_group.php?id=<?php echo (int) $row['id']; ?>">Poista</a>
+                                    </div>
                                 </div>
-                                <div class="poista">
-                                    <a href="delete_group.php?id=<?php echo (int) $row['id']; ?>">Poista</a>
-                                </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
                         <p class="description">
                             <?php echo htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8'); ?>
