@@ -52,7 +52,7 @@ $latest_posts = mysqli_query(
                     <strong><?= htmlspecialchars($user["name"], ENT_QUOTES, 'UTF-8') ?></strong>
                 </div>
             </div>
-            <a class="account-link" href="logout.php">Kirjaudu ulos <span aria-hidden="true">&#8594;</span></a>
+
         <?php else: ?>
             <div class="account-identity">
                 <span class="account-avatar account-avatar-guest" aria-hidden="true">?</span>
@@ -81,7 +81,7 @@ $latest_posts = mysqli_query(
         <section class="home-panel">
             <div class="group-list">
                 <h2>Ryhmälista</h2>
-                <a href="add_group.php">Lisää ryhmä</a>
+                <a class="button action-button" href="add_group.php">Lisää Ryhmä</a>
             </div>
             <div class="group-items">
                 <!-- Tulostetaan ryhmät yksitellen turvallisesti HTML-muotoon. -->

@@ -65,6 +65,8 @@ $result = mysqli_stmt_get_result($stmt);
     </main>
 
     <div class="postaukset">
+
+    
         <?php if ($post_deleted) { ?>
             <div class="message Onnstui_message">
                 Julkaisu poistettu onnistuneesti.
@@ -104,6 +106,7 @@ $result = mysqli_stmt_get_result($stmt);
             </article>
         <?php } ?>
     </div>
+    	<?php include 'include/footer.php'; ?>
 </body>
 
 </html>

@@ -99,6 +99,7 @@ if (!$group) {
         </form>
 
     </main>
+	<?php include 'include/footer.php'; ?>
 </body>
 
 </html>
