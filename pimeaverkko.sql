@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Rakenne taululle `groups`
 --
 
+DROP TABLE IF EXISTS `posts`;
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE IF NOT EXISTS `groups` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -63,7 +64,8 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `POST_FK_user_id` (`user_id`)
+  KEY `POST_FK_user_id` (`user_id`),
+  KEY `POST_FK_group_id` (`group_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -118,7 +120,8 @@ ALTER TABLE `groups`
 -- Rajoitteet taululle `posts`
 --
 ALTER TABLE `posts`
-  ADD CONSTRAINT `POST_FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `POST_FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `POST_FK_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

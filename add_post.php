@@ -24,9 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Tallennetaan julkaisu parametrisoidulla kyselyllä.
         $stmt = mysqli_prepare(
             $conn,
-            'INSERT INTO posts (group_id, author, content, created_at) VALUES (?, ?, ?, NOW())'
+            'INSERT INTO posts (group_id, user_id, author, content, created_at) VALUES (?, ?, ?, ?, NOW())'
         );
-        mysqli_stmt_bind_param($stmt, 'iss', $group_id, $author, $content);
+        $user_id = (int) $_SESSION['user_id'];
+        mysqli_stmt_bind_param($stmt, 'iiss', $group_id, $user_id, $author, $content);
 
         if (mysqli_stmt_execute($stmt)) {
             $message = 'Julkaisu lisättiin onnistuneesti.';

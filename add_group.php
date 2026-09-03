@@ -20,9 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		// Käytetään valmisteltua lausetta käyttäjän syötteiden käsittelyyn.
 		$stmt = mysqli_prepare(
 			$conn,
-			'INSERT INTO `groups` (name, description) VALUES (?, ?)'
+			'INSERT INTO `groups` (user_id, name, description) VALUES (?, ?, ?)'
 		);
-		mysqli_stmt_bind_param($stmt, 'ss', $name, $description);
+		$user_id = (int) $_SESSION['user_id'];
+		mysqli_stmt_bind_param($stmt, 'iss', $user_id, $name, $description);
 
 		if (mysqli_stmt_execute($stmt)) {
 			$message = 'Ryhmä lisättiin onnistuneesti.';
