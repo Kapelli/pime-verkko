@@ -480,6 +480,59 @@ main>p {
     gap: 12px;
 }
 
+.profile-posts {
+    width: min(100% - 40px, 720px);
+    margin: 0 auto 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-posts h2 {
+    margin: 0;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+}
+
+.profile-posts > p {
+    margin: 0 0 8px;
+    color: var(--muted);
+}
+
+.profile-post {
+    padding: 20px 22px;
+    background: rgba(23, 33, 30, .88);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, .12);
+}
+
+.profile-author {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--mint);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.profile-post p {
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.profile-post-meta {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.profile-post-meta time {
+    color: var(--muted);
+    font-size: .75rem;
+    letter-spacing: .04em;
+}
+
 .profile-actions .action-button,
 .logout-button {
     flex: 1;
@@ -905,6 +958,33 @@ body.auth-page {
 
 .auth-card button:hover {
     background: #d0f9df;
+}
+
+.auth-links {
+    margin-top: 18px;
+}
+
+.secondary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 16px;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line-bright);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.secondary-action:hover,
+.secondary-action:focus-visible {
+    background: rgba(161, 232, 197, .05);
+    border-color: var(--mint);
+    transform: translateY(-1px);
 }
 
 .auth-card em {

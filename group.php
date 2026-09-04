@@ -49,8 +49,9 @@ $result = mysqli_stmt_get_result($stmt);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pimeäverkko</title>
+    <title><?php echo htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8'); ?> - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 
 <body>

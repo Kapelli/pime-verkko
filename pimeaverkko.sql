@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Isäntä: 127.0.0.1:3306
--- Luontiaika: 28.08.2026 klo 09:54
+-- Luontiaika: 04.09.2026 klo 06:56
 -- Palvelimen versio: 8.4.7
 -- PHP-versio 8.3.28
 
@@ -27,23 +27,22 @@ SET time_zone = "+00:00";
 -- Rakenne taululle `groups`
 --
 
-DROP TABLE IF EXISTS `posts`;
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE IF NOT EXISTS `groups` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_User_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Vedos taulusta `groups`
 --
 
 INSERT INTO `groups` (`id`, `user_id`, `name`, `description`) VALUES
-(1, 1, 'Pelit', 'peleistä liittyviä keskusteluja'),
+(1, 1, 'Pelit2', 'peleistä liittyviä keskusteluja'),
 (2, 1, 'Autot', 'Autoista liittyviä keskusteluja'),
 (9, 1, 'Koulu', 'kouluun liittyvää keskustelua'),
 (10, 1, '\'', '\''),
@@ -60,13 +59,13 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `group_id` int NOT NULL,
   `user_id` int NOT NULL,
-  `author` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `author` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `POST_FK_user_id` (`user_id`),
   KEY `POST_FK_group_id` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Vedos taulusta `posts`
@@ -78,7 +77,8 @@ INSERT INTO `posts` (`id`, `group_id`, `user_id`, `author`, `content`, `created_
 (10, 2, 1, 'Jarkko', 'mOPO ON PAREMPI KUIN AUTO', '2026-08-21 09:38:53'),
 (11, 9, 1, 'Jarkko', 'MINÄ VIHAAN KOULUA TODELLA PALJON', '2026-08-21 09:39:37'),
 (12, 10, 1, '¨ÅP08967¨\'Ä\'\'¨\'', '\'¨\'0875Q£@€$€$', '2026-08-21 09:40:03'),
-(15, 1, 1, 'Jarkko H', 'moi', '2026-08-25 09:08:43');
+(15, 1, 1, 'Jarkko H', 'moi', '2026-08-25 09:08:43'),
+(17, 1, 6, 'testi', 'testi', '2026-09-04 06:55:30');
 
 -- --------------------------------------------------------
 
@@ -89,12 +89,12 @@ INSERT INTO `posts` (`id`, `group_id`, `user_id`, `author`, `content`, `created_
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password_hash` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Vedos taulusta `user`
@@ -102,9 +102,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`id`, `name`, `email`, `password_hash`) VALUES
 (1, 'admin', 'admin@gmail.com', '$2y$10$riKqirBOd1Yr1mC7OcgYnu49VS04Kyqoq8EGhqjvuc8CW6KoKrns2'),
-(2, 'admin', 'admin2@gmail.com', '$2y$10$BKdrN5G2M5EYrxYHPDa/muJzNDDnoI0JpkoTH9INn5435PK.P6RiW'),
+(2, 'Admin2', 'admin2@gmail.com', '$2y$10$BKdrN5G2M5EYrxYHPDa/muJzNDDnoI0JpkoTH9INn5435PK.P6RiW'),
 (3, 'admin', 'admin3@gmail.com', '$2y$10$UsdzOGFJzGZCgX5jpwA.aePpzgLmUGq7en0bSI/MAgz51L1H5H10y'),
-(5, 'Jarkko', 'jarkko@gmail.com', '$2y$10$YTr9IDRhnTdLYW.oYY2zZ.X9TUDMdDCQfsprJWuWCp.oYopJ11XZS');
+(5, 'Jarkko', 'jarkko@gmail.com', '$2y$10$YTr9IDRhnTdLYW.oYY2zZ.X9TUDMdDCQfsprJWuWCp.oYopJ11XZS'),
+(6, 'testi2', 'testi@gmail.com', '$2y$10$oPiXrOOCmEiRiHMZo0iZDuh2rWQPXmajxNFdKsPLwBcFPVL8jKgZ6');
 
 --
 -- Rajoitteet vedostauluille
@@ -120,8 +121,8 @@ ALTER TABLE `groups`
 -- Rajoitteet taululle `posts`
 --
 ALTER TABLE `posts`
-  ADD CONSTRAINT `POST_FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `POST_FK_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `POST_FK_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `POST_FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

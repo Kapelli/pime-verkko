@@ -3,6 +3,11 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+$user_name = trim((string) ($user['name'] ?? ''));
+if ($user_name === '') {
+    exit('Käyttäjänimi puuttuu.');
+}
+
 // Tallennetaan kirjautuneen käyttäjän id, jotta voidaan tarkistaa omistajuus.
 $user_id = (int) ($_SESSION['user_id'] ?? 0);
 
@@ -30,11 +35,11 @@ if ((int) $row['user_id'] !== $user_id) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Luetaan julkaisun uudet tiedot lomakkeesta.
-    $author = trim($_POST['author'] ?? '');
+    // Käyttäjän nimi pysyy aina oikeana, vaikka lomakkeelta ei anneta nimeä erikseen.
+    $author = $user_name;
     $content = trim($_POST['content'] ?? '');
 
-    if ($author === '' || $content === '') {
+    if ($content === '') {
         // Julkaisua ei päivitetä puuttuvilla tiedoilla.
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
@@ -50,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'Julkaisu päivitettiin onnistuneesti.';
             $message_class = 'Onnstui_message';
 
-            // Näyttää lomakkeella juuri tallennetut arvot
+            // Näyttää lomakkeella juuri tallennetut arvot.
             $row['author'] = $author;
             $row['content'] = $content;
         } else {
@@ -67,8 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Muokkaa julkaisua - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 
 <body>
@@ -85,10 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST">
 
-            <label for="author">Nimimerkki</label>
-
-            <input type="text" name="author" id="author" placeholder="Nimimerkkisi"
-                value="<?php echo htmlspecialchars($row['author']); ?>">
+            <p class="form-user-name">Julkaisu näkyy käyttäjänä: <strong><?php echo htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8'); ?></strong></p>
 
             <label for="content">Julkaisu</label>
 

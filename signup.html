@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rekisteröidy | Pimeäverkko</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js" defer></script>
     <!-- defer suorittaa validointikoodin vasta HTML:n latauduttua. -->
@@ -38,8 +39,12 @@
             <input type="password" id="password_confirmation" name="password_confirmation">
         </div>
 
-        <button>Luo käyttäjä</button>
+        <button type="submit">Luo käyttäjä</button>
     </form>
+
+    <div class="auth-links">
+        <a href="login.php" class="secondary-action">Kirjaudu sisään</a>
+    </div>
     </main>
 </body>
 

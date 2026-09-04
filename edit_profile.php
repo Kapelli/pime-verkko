@@ -65,6 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mysqli_stmt_bind_param($stmt, 'ssi', $name, $email, $id);
 
             if (mysqli_stmt_execute($stmt)) {
+                $post_stmt = mysqli_prepare(
+                    $conn,
+                    'UPDATE posts SET author = ? WHERE user_id = ?'
+                );
+                mysqli_stmt_bind_param($post_stmt, 'si', $name, $id);
+                mysqli_stmt_execute($post_stmt);
+                mysqli_stmt_close($post_stmt);
+
                 $message = 'Profiili päivitettiin onnistuneesti.';
                 $message_class = 'Onnstui_message';
 
@@ -86,8 +94,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Muokkaa profiilia - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 
 <body>
@@ -101,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Päivitä nimesi ja sähköpostiosoitteesi.</p>
             </div>
 
-            <h1>Muokkaa profiilia</h1>
             <?php if (!empty($message)) { ?>
                 <div class="<?php echo $message_class; ?>">
                     <?php echo $message; ?>

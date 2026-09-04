@@ -4,6 +4,11 @@ include 'database.php';
 
 require __DIR__ . "/include/session.php";
 
+$user_name = trim((string) ($user['name'] ?? ''));
+if ($user_name === '') {
+    exit('Käyttäjänimi puuttuu.');
+}
+
 // Alustetaan lomakkeen palautetta varten tarvittavat muuttujat.
 $message = '';
 $message_class = '';
@@ -13,10 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Luetaan julkaisuun liittyvät tiedot lomakkeesta.
     $group_id = filter_input(INPUT_POST, 'group_id', FILTER_VALIDATE_INT);
     $selected_group_id = $group_id ?: 0;
-    $author = trim($_POST['author'] ?? '');
+    $author = $user_name;
     $content = trim($_POST['content'] ?? '');
 
-    if (!$group_id || $author === '' || $content === '') {
+    if (!$group_id || $content === '') {
         // Julkaisua ei tallenneta, jos jokin pakollinen kenttä puuttuu.
         $message = 'Täytä kaikki kentät.';
         $message_class = 'Epaonnstui_message';
@@ -65,6 +70,7 @@ if (!$group) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lisää julkaisu - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 
 <body>
@@ -80,8 +86,7 @@ if (!$group) {
         <?php } ?>
 
         <form method="post">
-            <label for="author">Nimi</label>
-            <input id="author" name="author" type="text" required>
+            <p class="form-user-name">Julkaisu näkyy käyttäjänä: <strong><?php echo htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8'); ?></strong></p>
 
             <label for="group_name">Ryhmä</label>
             <input id="group_name" type="text"

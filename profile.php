@@ -16,6 +16,10 @@ if (!$user) {
     exit('Käyttäjää ei löytynyt.');
 }
 
+
+//Käyttäjän omat postaukset
+$post_result = mysqli_query($conn, "SELECT id, author, content, created_at FROM `posts` WHERE user_id = $user_id ORDER BY created_at DESC");
+
 ?>
 <!DOCTYPE html>
 <html lang="fi">
@@ -23,8 +27,9 @@ if (!$user) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profiili</title>
+    <title>Profiili - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 
 <body class="profile-page-body">
@@ -62,6 +67,29 @@ if (!$user) {
                     Kirjaudu ulos <span aria-hidden="true">&#8594;</span>
                 </a>
             </div>
+        </section>
+        <section class="profile-posts">
+            <h2>Omat postaukset</h2>
+            <p>Omat postaukset näkyvät tässä.</p>
+
+            <?php if (mysqli_num_rows($post_result) === 0) { ?>
+                <article class="profile-post">
+                    <p>Et ole julkaissut vielä mitään.</p>
+                </article>
+            <?php } ?>
+
+            <?php while ($post = mysqli_fetch_assoc($post_result)) { ?>
+                <article class="profile-post">
+                    <strong class="profile-author">
+                        <?php echo htmlspecialchars($post['author'], ENT_QUOTES, 'UTF-8'); ?>
+                    </strong>
+                    <p><?php echo htmlspecialchars($post['content'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <div class="profile-post-meta">
+                        <time><?php echo htmlspecialchars($post['created_at'], ENT_QUOTES, 'UTF-8'); ?></time>
+                    </div>
+                </article>
+            <?php } ?>
+
         </section>
     </main>
 

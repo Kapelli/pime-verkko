@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body class="auth-page">
 <main class="auth-card">
@@ -62,8 +63,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <label for="password">Salasana</label>
         <input type="password" name="password" id="password">
         
-        <button>Kirjaudu sisään</button>
+        <button type="submit">Kirjaudu sisään</button>
     </form>
+
+    <div class="auth-links">
+        <a href="signup.html" class="secondary-action">Luo käyttäjä</a>
+    </div>
     </main>
 </body>
 </html>

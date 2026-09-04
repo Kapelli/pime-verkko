@@ -45,11 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Luo ryhmä - Pimeäverkko</title>
 	<link rel="stylesheet" href="style.css">
-</head>
+	<link rel="icon" type="image/png" href="images/favicon.png">
 
 <body>
 	<?php include 'include/nav.php'; ?>
-
 	<main class="add-post add-group-page">
 		<h1>Luo ryhmä</h1>
 
