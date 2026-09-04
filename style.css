@@ -138,13 +138,17 @@ nav a {
 }
 
 .choice-header {
+    max-width: none;
+    margin: 0;
     padding: 40px 32px 18px;
     text-align: center;
 }
 
 .choice-header h1 {
+    width: 100%;
+    margin: 0 auto 10px;
     font-size: clamp(2.2rem, 4vw, 4rem);
-    margin-bottom: 10px;
+    text-align: center;
 }
 
 .choice-header p {
