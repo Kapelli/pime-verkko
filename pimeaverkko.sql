@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Isäntä: 127.0.0.1:3306
--- Luontiaika: 04.09.2026 klo 09:54
+-- Luontiaika: 08.09.2026 klo 09:45
 -- Palvelimen versio: 8.4.7
 -- PHP-versio 8.3.28
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_User_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Vedos taulusta `groups`
@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `groups` (
 INSERT INTO `groups` (`id`, `user_id`, `name`, `description`) VALUES
 (14, 7, 'Pelit', 'Peleihin liittyvää keskustelua'),
 (16, 7, 'Autot', 'Autoista liittyvää keskustelua'),
-(17, 8, 'Koirat', 'koiria');
+(17, 8, 'Koirat', 'koiria'),
+(18, 7, '?>=SA*^^¨¨\'', '?>=SA*^^¨¨\'');
 
 -- --------------------------------------------------------
 
@@ -89,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Vedos taulusta `user`
@@ -102,7 +103,8 @@ INSERT INTO `user` (`id`, `name`, `email`, `password_hash`) VALUES
 (5, 'Jarkko', 'jarkko@gmail.com', '$2y$10$YTr9IDRhnTdLYW.oYY2zZ.X9TUDMdDCQfsprJWuWCp.oYopJ11XZS'),
 (6, 'testi', 'testi@gmail.com', '$2y$10$oPiXrOOCmEiRiHMZo0iZDuh2rWQPXmajxNFdKsPLwBcFPVL8jKgZ6'),
 (7, 'Kaapo', 'kaapo@gmail.com', '$2y$10$MhLzDhYQESsnyL7.xp0.Cuq3u0sVDPZbIUODlx/M/kHh3L7TajcN2'),
-(8, 'Jarkko2', 'jarkko2@gmail.com', '$2y$10$3ofJXotjTHxgysph..gj6uOobiqgLtMX.GGoBL9qZQsimd.1Cb.l6');
+(8, 'Jarkko2', 'jarkko2@gmail.com', '$2y$10$3ofJXotjTHxgysph..gj6uOobiqgLtMX.GGoBL9qZQsimd.1Cb.l6'),
+(9, '2', 'kaapo2@gmail.com', '$2y$10$z6.FpcgvgS6EkmCmrxt4meeJinrdKz1o5UDPRNfdb4WeN0NsRlaYe');
 
 --
 -- Rajoitteet vedostauluille
