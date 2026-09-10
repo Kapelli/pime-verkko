@@ -75,7 +75,7 @@ $latest_posts = mysqli_query(
     </header>
     <main>
         <p>
-            Pimeäverkko on yksityinen keskustelufoorumi, jossa käyttäjät voivat luoda ryhmiä ja julkaista sisältöä.
+            Pimeäverkko on yksityinen keskustelufoorumi, jossa käyttäjät voivat luoda ryhmiä ja julkaista sisältöä ryhmien sisällä.
         </p>
     </main>
     <div class="home-columns">
