@@ -31,6 +31,8 @@ html {
 /* Tumma tausta ja hillityt väripinnat muodostavat sivuston perustyylin. */
 
 body {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     margin: 0;
     color: var(--ink);
@@ -1011,6 +1013,18 @@ body.auth-page {
     font-weight: 600;
 }
 
+.add-post form button[type="button"] {
+    margin-top: 4px;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line-bright);
+}
+
+.add-post form button[type="button"]:hover {
+    background: rgba(161, 232, 197, .05);
+    border-color: var(--mint);
+}
+
 @media (max-width: 600px) {
     nav {
         gap: 14px;
@@ -1096,6 +1110,15 @@ body.auth-page {
 
     .auth-card {
         padding: 28px 22px;
+    }
+
+    .profile-edit-card {
+        padding: 28px 22px;
+    }
+
+    .profile-edit-actions {
+        align-items: stretch;
+        flex-direction: column;
     }
 }
 

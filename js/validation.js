@@ -1,15 +1,36 @@
-// Luodaan rekisteröitymislomakkeen asiakaspuolen validointi.
 const validation = new JustValidate("#signup");
 
 validation
-    // Nimi on pakollinen kenttä.
     .addField("#name", [
         {
             rule: "required"
+        },
+        {
+            validator: (value) => value.trim().length >= 8,
+            errorMessage: "Nimen pitää olla vähintään 8 merkkiä pitkä"
+        },
+        {
+            validator: (value) => value.trim().length <= 20,
+            errorMessage: "Nimi voi olla enintään 20 merkkiä pitkä"
+        },
+        {
+            validator: (value) => /^[\p{L}\p{N}._ -]+$/u.test(value.trim()),
+            errorMessage: "Nimessä saa käyttää vain kirjaimia, numeroita, välilyöntejä sekä merkkejä . _ -"
+        },
+        {
+            validator: (value) => () => {
+                return fetch("validate-username.php?name=" + encodeURIComponent(value))
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (json) {
+                        return json.available;
+                    });
+            },
+            errorMessage: "Nimi on jo käytössä"
         }
     ])
     .addField("#email", [
-        // Sähköpostin pitää olla annettu ja oikeassa muodossa.
         {
             rule: "required"
         },
@@ -17,21 +38,19 @@ validation
             rule: "email"
         },
         {
-            // Tarkistetaan palvelimelta, ettei sähköpostiosoite ole jo käytössä.
             validator: (value) => () => {
                 return fetch("validate-email.php?email=" + encodeURIComponent(value))
-                       .then(function(response) {
-                           return response.json();
-                       })
-                       .then(function(json) {
-                           return json.available;
-                       });
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (json) {
+                        return json.available;
+                    });
             },
-            errorMessage: "email already taken"
+            errorMessage: "Sähköpostiosoite on jo käytössä"
         }
     ])
     .addField("#password", [
-        // JustValidate tarkistaa salasanan olemassaolon ja vahvuuden.
         {
             rule: "required"
         },
@@ -40,28 +59,25 @@ validation
         }
     ])
     .addField("#password_confirmation", [
-        // Varmistetaan, että salasana kirjoitettiin uudelleen oikein.
         {
             validator: (value, fields) => {
                 return value === fields["#password"].elem.value;
             },
-            errorMessage: "Passwords should match"
+            errorMessage: "Salasanat eivät täsmää"
         }
     ])
     .onSuccess((event) => {
-        // Lähetetään lomake palvelimelle vasta onnistuneen validoinnin jälkeen.
         document.getElementById("signup").submit();
     });
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+

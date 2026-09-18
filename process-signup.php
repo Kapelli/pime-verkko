@@ -1,13 +1,32 @@
 <?php
 
+// Siistitään nimi ennen tarkistuksia ja tallennusta.
+$name = trim($_POST["name"] ?? '');
+$email = trim($_POST["email"] ?? '');
+
 // Tarkistetaan, että käyttäjä antoi nimen.
-if (empty($_POST["name"])) {
+if ($name === '') {
     die("Name is required");
 }
 
-// Tarkistetaan sähköpostiosoitteen muoto.
-if ( ! filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
-    die("Valid email is required");
+// Varmistetaan nimen vähimmäispituus.
+if (mb_strlen($name) < 8) {
+    die("Name must be at least 8 characters");
+}
+
+// Sallitaan kirjaimet, numerot, välilyönnit sekä some-nimissä yleiset . _ ja - merkit.
+if (!preg_match('/\A[\p{L}\p{N}._ -]+\z/u', $name)) {
+    die("Nimi sisältää kiellettyjä merkkejä");
+}
+
+// Varmistetaan nimen enimmäispituus.
+if (mb_strlen($name) > 20) {
+    die("Name must be at most 20 characters");
+}
+
+// Tarkistetaan sähköpostiosoitteen pituus ja muoto.
+if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    die("Anna kelvollinen sähköpostiosoite");
 }
 
 // Varmistetaan salasanan vähimmäispituus.
@@ -45,8 +64,8 @@ if ( ! $stmt->prepare($sql)) {
 }
 
 $stmt->bind_param("sss",
-                  $_POST["name"],
-                  $_POST["email"],
+                  $name,
+                  $email,
                   $password_hash);
                   
 if ($stmt->execute()) {
