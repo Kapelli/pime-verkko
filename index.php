@@ -9,6 +9,7 @@ $user_id = (int) ($_SESSION['user_id'] ?? 0);
 
 // Luetaan poiston onnistumisesta kertova ilmoitus URL-osoitteesta.
 $group_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
+$group_created = filter_input(INPUT_GET, 'created', FILTER_VALIDATE_INT) === 1;
 
 // Haetaan etusivulle kaikki keskusteluryhmät ja ryhmien tiedot tietokannasta.
 $result = mysqli_query($conn, "SELECT id, user_id, name, description FROM `groups`");
@@ -78,6 +79,18 @@ $latest_posts = mysqli_query(
             Pimeäverkko on yksityinen keskustelufoorumi, jossa käyttäjät voivat luoda ryhmiä ja julkaista sisältöä ryhmien sisällä.
         </p>
     </main>
+
+    <?php if ($group_deleted) { ?>
+        <div class="message Onnstui_message home-message">
+            Ryhmä poistettu onnistuneesti.
+        </div>
+    <?php } ?>
+    <?php if ($group_created) { ?>
+        <div class="message Onnstui_message home-message">
+            Ryhmä lisättiin onnistuneesti.
+        </div>
+    <?php } ?>
+
     <div class="home-columns">
         <section class="home-panel">
             <div class="group-list">
@@ -137,11 +150,6 @@ $latest_posts = mysqli_query(
         </section>
     </div>
 
-    <?php if ($group_deleted) { ?>
-        <div class="message Onnstui_message home-message">
-            Ryhmä poistettu onnistuneesti.
-        </div>
-    <?php } ?>
     <?php include 'include/footer.php'; ?>
 </body>
 

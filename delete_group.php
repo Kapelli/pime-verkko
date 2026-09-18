@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">
                 Poista
             </button>
-            <button type="button" onclick="history.back();">
+            <button type="button" onclick="window.location.href='index.php';">
                 Takaisin
             </button>
 

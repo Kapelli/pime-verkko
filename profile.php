@@ -8,13 +8,16 @@ require __DIR__ . "/include/session.php";
 $user_id = (int) ($_SESSION['user_id'] ?? 0);
 
 
-// Haetaan etusivulle kaikki keskusteluryhmät ja ryhmien tiedot tietokannasta.
-$result = mysqli_query($conn, "SELECT id, name, email FROM `user` WHERE id = $user_id");
+// Haetaan käyttäjän ryhmätilastot user-taulusta.
+$result = mysqli_query($conn, "SELECT id, name, email, max_groups, groups_created FROM `user` WHERE id = $user_id");
 $user = mysqli_fetch_assoc($result);
 
 if (!$user) {
     exit('Käyttäjää ei löytynyt.');
 }
+
+$group_count = (int) $user['groups_created'];
+$max_groups = (int) $user['max_groups'];
 
 
 //Käyttäjän omat postaukset
@@ -57,6 +60,11 @@ $post_result = mysqli_query($conn, "SELECT id, author, content, created_at FROM 
             <div class="profile-detail">
                 <span class="profile-detail__label">Sähköposti</span>
                 <span class="profile-detail__value"><?= htmlspecialchars($user["email"], ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+
+            <div class="profile-detail">
+                <span class="profile-detail__label">Luodut ryhmät</span>
+                <span class="profile-detail__value"><?= $group_count ?> / <?= $max_groups ?></span>
             </div>
 
             <div class="profile-actions">

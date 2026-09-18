@@ -52,12 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_bind_param($stmt, 'ssii', $author, $content, $id, $user_id);
 
         if (mysqli_stmt_execute($stmt)) {
-            $message = 'Julkaisu päivitettiin onnistuneesti.';
-            $message_class = 'Onnstui_message';
-
-            // Näyttää lomakkeella juuri tallennetut arvot.
-            $row['author'] = $author;
-            $row['content'] = $content;
+            mysqli_stmt_close($stmt);
+            header('Location: group.php?id=' . (int) $row['group_id'] . '&updated=1');
+            exit;
         } else {
             $message = 'Julkaisun päivittäminen epäonnistui.';
             $message_class = 'Epaonnstui_message';
@@ -102,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">
                 Tallenna muutokset
             </button>
-            <button type="button" onclick="history.back();">
+            <button type="button" onclick="window.location.href='group.php?id=<?php echo (int) $row['group_id']; ?>';">
                 Takaisin
             </button>
 

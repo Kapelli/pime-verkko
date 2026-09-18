@@ -35,8 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_bind_param($stmt, 'iiss', $group_id, $user_id, $author, $content);
 
         if (mysqli_stmt_execute($stmt)) {
-            $message = 'Julkaisu lisättiin onnistuneesti.';
-            $message_class = 'Onnstui_message';
+            mysqli_stmt_close($stmt);
+            header('Location: group.php?id=' . (int) $group_id . '&created=1');
+            exit;
         } else {
             $message = 'Julkaisun lisääminen epäonnistui.';
             $message_class = 'Epaonnstui_message';
@@ -97,7 +98,7 @@ if (!$group) {
             <textarea id="content" name="content" required></textarea>
 
             <button type="submit">Julkaise</button>
-            <button type="button" onclick="history.back();">
+            <button type="button" onclick="window.location.href='group.php?id=<?php echo (int) $selected_group_id; ?>';">
                 Takaisin
             </button>
 

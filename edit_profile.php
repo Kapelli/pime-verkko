@@ -30,64 +30,12 @@ if (!$row) {
     exit('Käyttäjää ei löytynyt.');
 }
 
-// Vain oman julkaisun muokkaus on sallittu.
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Luetaan profiilin uudet tiedot lomakkeesta.
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-
-    if ($name === '' || $email === '') {
-        // Profiilia ei päivitetä puuttuvilla tiedoilla.
-        $message = 'Täytä kaikki kentät.';
-        $message_class = 'Epaonnstui_message';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $message = 'Valid email is required';
-        $message_class = 'Epaonnstui_message';
-    } else {
-        // Tarkistetaan, ettei toinen käyttäjä käytä samaa sähköpostiosoitetta.
-        $email_stmt = mysqli_prepare(
-            $conn,
-            'SELECT id FROM user WHERE email = ? AND id <> ?'
-        );
-        mysqli_stmt_bind_param($email_stmt, 'si', $email, $id);
-        mysqli_stmt_execute($email_stmt);
-        $email_result = mysqli_stmt_get_result($email_stmt);
-
-        if (mysqli_fetch_assoc($email_result)) {
-            $message = 'email already taken';
-            $message_class = 'Epaonnstui_message';
-        } else {
-            // Päivitetään kirjautuneen käyttäjän omat profiilitiedot.
-            $stmt = mysqli_prepare(
-                $conn,
-                'UPDATE user SET name = ?, email = ? WHERE id = ?'
-            );
-            mysqli_stmt_bind_param($stmt, 'ssi', $name, $email, $id);
-
-            if (mysqli_stmt_execute($stmt)) {
-                $post_stmt = mysqli_prepare(
-                    $conn,
-                    'UPDATE posts SET author = ? WHERE user_id = ?'
-                );
-                mysqli_stmt_bind_param($post_stmt, 'si', $name, $id);
-                mysqli_stmt_execute($post_stmt);
-                mysqli_stmt_close($post_stmt);
-
-                $message = 'Profiili päivitettiin onnistuneesti.';
-                $message_class = 'Onnstui_message';
-
-                // Näyttää lomakkeella juuri tallennetut arvot
-                $row['name'] = $name;
-                $row['email'] = $email;
-            } else {
-                $message = 'Profiilin päivittäminen epäonnistui.';
-                $message_class = 'Epaonnstui_message';
-            }
-        }
-    }
-}
-
+$message = trim($_GET['message'] ?? '');
+$message_class = ($_GET['status'] ?? '') === 'success'
+    ? 'Onnstui_message'
+    : 'Epaonnstui_message';
 ?>
+
 <!DOCTYPE html>
 <html lang="fi">
 
@@ -97,6 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Muokkaa profiilia - Pimeäverkko</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js" defer></script>
+    <!-- defer suorittaa validointikoodin vasta HTML:n latauduttua. -->
+    <script src="js/validation-profile-edit.js" defer></script>
 </head>
 
 <body>
@@ -110,13 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Päivitä nimesi ja sähköpostiosoitteesi.</p>
             </div>
 
-            <?php if (!empty($message)) { ?>
-                <div class="<?php echo $message_class; ?>">
-                    <?php echo $message; ?>
+            <?php if ($message !== '') { ?>
+                <div class="message <?php echo $message_class; ?>">
+                    <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>
                 </div>
             <?php } ?>
 
-            <form method="POST" class="profile-edit-form">
+            <form action="process-profile-update.php" method="POST" id="profile-edit" class="profile-edit-form">
 
                 <label for="name">Nimi</label>
 
@@ -132,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button class="action-button" type="submit">
                         Tallenna muutokset
                     </button>
-                    <button class="secondary-action" type="button" onclick="history.back();">
+                    <button class="secondary-action" type="button" onclick="window.location.href='profile.php';">
                         Takaisin
                     </button>
                 </div>

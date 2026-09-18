@@ -15,6 +15,8 @@ if (!$group_id) {
 
 // Näytetään ilmoitus, jos julkaisu poistettiin edelliseltä sivulta.
 $post_deleted = filter_input(INPUT_GET, 'deleted', FILTER_VALIDATE_INT) === 1;
+$post_created = filter_input(INPUT_GET, 'created', FILTER_VALIDATE_INT) === 1;
+$content_updated = filter_input(INPUT_GET, 'updated', FILTER_VALIDATE_INT) === 1;
 
 // Haetaan valitun ryhmän nimi ja kuvaus parametrisoidulla kyselyllä.
 $group_stmt = mysqli_prepare(
@@ -71,6 +73,16 @@ $result = mysqli_stmt_get_result($stmt);
         <?php if ($post_deleted) { ?>
             <div class="message Onnstui_message">
                 Julkaisu poistettu onnistuneesti.
+            </div>
+        <?php } ?>
+        <?php if ($post_created) { ?>
+            <div class="message Onnstui_message">
+                Julkaisu lisättiin onnistuneesti.
+            </div>
+        <?php } ?>
+        <?php if ($content_updated) { ?>
+            <div class="message Onnstui_message">
+                Muutokset tallennettiin onnistuneesti.
             </div>
         <?php } ?>
         <?php while ($row = mysqli_fetch_assoc($result)) { ?>
